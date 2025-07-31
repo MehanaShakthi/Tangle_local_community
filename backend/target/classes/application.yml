@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: tangle-backend
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/tangle_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
+    username: tangle_user
+    password: tangle_password_2024
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+  
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your-email@gmail.com
+    password: your-app-password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+jwt:
+  secret: tangleSecretKey2024ForJWTTokenGenerationAndValidation
+  expiration: 86400000 # 24 hours in milliseconds
+
+app:
+  cors:
+    allowed-origins: http://localhost:3000
+    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+    allowed-headers: "*"
+    allow-credentials: true
+
+logging:
+  level:
+    com.tangle: DEBUG
+    org.springframework.security: DEBUG 
