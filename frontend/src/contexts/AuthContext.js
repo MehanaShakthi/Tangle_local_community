@@ -50,13 +50,10 @@ export const AuthProvider = ({ children }) => {
         password
       });
       
-      const { token: newToken } = response.data;
+      const { token: newToken, user: userData } = response.data;
       setToken(newToken);
+      setUser(userData);
       localStorage.setItem('token', newToken);
-      
-      // Fetch user profile
-      const profileResponse = await axios.get('/api/auth/profile');
-      setUser(profileResponse.data);
       
       return { success: true };
     } catch (error) {

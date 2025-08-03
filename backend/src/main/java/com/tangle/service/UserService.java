@@ -54,14 +54,14 @@ public class UserService {
         user.setLocality(registrationDto.getLocality());
         user.setPincode(registrationDto.getPincode());
         user.setCommunity(community);
-                            user.setRole(UserRole.valueOf(registrationDto.getUserRole()));
+        user.setRole(UserRole.valueOf(registrationDto.getUserRole()));
         user.setIsActive(true);
         user.setIsVerified(false);
 
         return userRepository.save(user);
     }
 
-    public String loginUser(LoginDto loginDto) {
+    public Map<String, Object> loginUser(LoginDto loginDto) {
         // Find user by email or phone number
         Optional<User> userOpt = userRepository.findByEmailOrPhoneNumber(loginDto.getEmailOrPhone(), loginDto.getEmailOrPhone());
         
@@ -77,7 +77,38 @@ public class UserService {
         }
 
         // Generate JWT token
-        return jwtService.generateToken(user);
+        String token = jwtService.generateToken(user);
+        
+        // Create response with user details and token
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("user", createUserResponse(user));
+        
+        return response;
+    }
+    
+    private Map<String, Object> createUserResponse(User user) {
+        Map<String, Object> userResponse = new HashMap<>();
+        userResponse.put("id", user.getId());
+        userResponse.put("fullName", user.getFullName());
+        userResponse.put("email", user.getEmail());
+        userResponse.put("phoneNumber", user.getPhoneNumber());
+        userResponse.put("role", user.getRole());
+        userResponse.put("address", user.getAddress());
+        userResponse.put("locality", user.getLocality());
+        userResponse.put("pincode", user.getPincode());
+        userResponse.put("isVerified", user.getIsVerified());
+        userResponse.put("profilePicture", user.getProfilePicture());
+        
+        if (user.getCommunity() != null) {
+            Map<String, Object> community = new HashMap<>();
+            community.put("id", user.getCommunity().getId());
+            community.put("name", user.getCommunity().getName());
+            community.put("location", user.getCommunity().getLocation());
+            userResponse.put("community", community);
+        }
+        
+        return userResponse;
     }
 
     public User getCurrentUser() {
@@ -91,7 +122,7 @@ public class UserService {
     }
 
     public List<User> getUsersByCommunityAndRole(Long communityId, UserRole role) {
-        return userRepository.findByCommunityIdAndUserRole(communityId, role);
+        return userRepository.findByCommunityIdAndRole(communityId, role);
     }
 
     public User updateUserProfile(Long userId, Map<String, String> updates) {

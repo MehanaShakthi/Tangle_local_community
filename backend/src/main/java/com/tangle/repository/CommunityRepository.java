@@ -11,7 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface CommunityRepository extends JpaRepository<Community, Long> {
-    
+    @Query("SELECT c FROM Community c WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(c.city) LIKE LOWER(CONCAT('%', :query, '%'))")
+    List<Community> searchCommunities(@Param("query") String query);
     Optional<Community> findByCommunityCode(String communityCode);
     
     Optional<Community> findByNameAndCity(String name, String city);

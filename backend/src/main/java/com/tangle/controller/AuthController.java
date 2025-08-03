@@ -13,14 +13,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
     
     @Autowired
     private UserService userService;
     
-    @PostMapping("/register")
+    @PostMapping("/api/auth/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto registrationDto) {
         try {
             User user = userService.registerUser(registrationDto);
@@ -40,15 +39,16 @@ public class AuthController {
         }
     }
     
-    @PostMapping("/login")
+    @PostMapping("/api/auth/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDto loginDto) {
         try {
-            String token = userService.loginUser(loginDto);
+            Map<String, Object> loginResponse = userService.loginUser(loginDto);
             
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Login successful");
-            response.put("token", token);
+            response.put("token", loginResponse.get("token"));
             response.put("tokenType", "Bearer");
+            response.put("user", loginResponse.get("user"));
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class AuthController {
         }
     }
     
-    @GetMapping("/profile")
+    @GetMapping("/api/auth/profile")
     public ResponseEntity<?> getCurrentUser() {
         try {
             User user = userService.getCurrentUser();
@@ -89,5 +89,14 @@ public class AuthController {
             error.put("error", e.getMessage());
             return ResponseEntity.badRequest().body(error);
         }
+    }
+    
+    // Simple test endpoint
+    @GetMapping("/api/test")
+    public ResponseEntity<Map<String, String>> test() {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Backend is working!");
+        response.put("status", "OK");
+        return ResponseEntity.ok(response);
     }
 } 

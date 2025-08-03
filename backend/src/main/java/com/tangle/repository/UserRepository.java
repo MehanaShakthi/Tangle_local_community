@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     List<User> findByCommunityId(Long communityId);
     
-    List<User> findByCommunityIdAndUserRole(Long communityId, UserRole role);
+    List<User> findByCommunityIdAndRole(Long communityId, UserRole role);
     
     @Query("SELECT COUNT(p) FROM Post p WHERE p.user.id = :userId")
     long countPostsByUserId(@Param("userId") Long userId);
