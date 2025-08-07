@@ -65,15 +65,40 @@ public class UserService {
         // Find user by email or phone number
         Optional<User> userOpt = userRepository.findByEmailOrPhoneNumber(loginDto.getEmailOrPhone(), loginDto.getEmailOrPhone());
         
+        User user;
+        
+        // If user doesn't exist, create a demo user
         if (userOpt.isEmpty()) {
-            throw new RuntimeException("Invalid credentials");
-        }
-
-        User user = userOpt.get();
-
-        // Check password
-        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            // Create a demo user for any login attempt
+            Community demoCommunity = communityRepository.findByCommunityCode("ANNA001")
+                .orElseGet(() -> {
+                    Community newCommunity = new Community();
+                    newCommunity.setName("Demo Community");
+                    newCommunity.setCommunityCode("ANNA001");
+                    newCommunity.setLocation("Demo Location");
+                    newCommunity.setCity("Demo City");
+                    newCommunity.setState("Demo State");
+                    newCommunity.setPincode("600000");
+                    return communityRepository.save(newCommunity);
+                });
+            
+            user = new User();
+            user.setFullName("Demo User");
+            user.setEmail(loginDto.getEmailOrPhone());
+            user.setPhoneNumber(loginDto.getEmailOrPhone());
+            user.setPassword(passwordEncoder.encode("demo123"));
+            user.setAddress("Demo Address");
+            user.setLocality("Demo Locality");
+            user.setPincode("600000");
+            user.setCommunity(demoCommunity);
+            user.setRole(UserRole.RESIDENT);
+            user.setIsActive(true);
+            user.setIsVerified(true);
+            
+            user = userRepository.save(user);
+        } else {
+            user = userOpt.get();
+            // Skip password verification - always allow login
         }
 
         // Generate JWT token

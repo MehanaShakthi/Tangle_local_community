@@ -21,7 +21,7 @@ const PostDetail = () => {
 
   const fetchPost = async () => {
     try {
-      const response = await axios.get(`/api/posts/${id}`);
+              const response = await axios.get(`/api/posts/${id}`);
       setPost(response.data);
     } catch (error) {
       console.error('Error fetching post:', error);
@@ -33,7 +33,7 @@ const PostDetail = () => {
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`/api/posts/${id}/comments`);
+              const response = await axios.get(`/api/posts/${id}/comments`);
       setComments(response.data);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -46,7 +46,7 @@ const PostDetail = () => {
 
     setSubmittingComment(true);
     try {
-      const response = await axios.post(`/api/posts/${id}/comments`, {
+              const response = await axios.post(`/api/posts/${id}/comments`, {
         content: commentText
       });
       setComments(prev => [response.data, ...prev]);
@@ -63,7 +63,7 @@ const PostDetail = () => {
     if (!window.confirm('Are you sure you want to report this post?')) return;
 
     try {
-      await axios.post(`/api/posts/${id}/report`, {
+              await axios.post(`/api/posts/${id}/report`, {
         reason: 'Inappropriate content',
         type: 'INAPPROPRIATE_CONTENT'
       });

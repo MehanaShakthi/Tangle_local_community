@@ -30,7 +30,7 @@ const Profile = () => {
 
   const fetchMyPosts = async () => {
     try {
-      const response = await axios.get('/api/posts/my-posts');
+              const response = await axios.get('/api/posts/my-posts');
       setMyPosts(response.data);
     } catch (error) {
       console.error('Error fetching my posts:', error);
@@ -39,7 +39,7 @@ const Profile = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get('/api/users/stats');
+              const response = await axios.get('/api/auth/stats');
       setStats(response.data);
     } catch (error) {
       console.error('Error fetching stats:', error);

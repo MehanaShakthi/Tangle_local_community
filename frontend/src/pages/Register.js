@@ -304,7 +304,7 @@ const Register = () => {
               disabled={loading}
             />
             <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
-              Ask your community admin for the code
+              Available codes: ANNA001, TNAGAR001, ADYAR001, MYLAPORE001, VELACHERY001
             </div>
           </div>
 
@@ -384,8 +384,9 @@ const Register = () => {
             Use these demo credentials to test the app:
           </p>
           <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-            <strong>Email:</strong> demo@tangle.com<br />
-            <strong>Password:</strong> demo123
+            <strong>Email:</strong> john@example.com<br />
+            <strong>Password:</strong> abcd<br />
+            <strong>Phone:</strong> 9876543211
           </div>
         </div>
       </div>

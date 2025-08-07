@@ -14,7 +14,7 @@ const CommentList = ({ postId, onCommentAdded }) => {
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`/comments/post/${postId}`);
+      const response = await axios.get(`/api/comments/${postId}`);
       setComments(response.data);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -27,8 +27,7 @@ const CommentList = ({ postId, onCommentAdded }) => {
 
     setLoading(true);
     try {
-      const response = await axios.post('/comments', {
-        post: { id: postId },
+      const response = await axios.post(`/api/comments/${postId}`, {
         content: newComment
       });
       
@@ -49,7 +48,7 @@ const CommentList = ({ postId, onCommentAdded }) => {
     if (!window.confirm('Are you sure you want to delete this comment?')) return;
 
     try {
-      await axios.delete(`/comments/${commentId}`);
+              await axios.delete(`/api/comments/${commentId}`);
       setComments(comments.filter(comment => comment.id !== commentId));
     } catch (error) {
       console.error('Error deleting comment:', error);

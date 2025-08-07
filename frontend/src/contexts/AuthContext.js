@@ -13,35 +13,35 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Set up axios defaults
-  useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    } else {
-      delete axios.defaults.headers.common['Authorization'];
-    }
-  }, [token]);
-
-  // Check if user is authenticated on app load
+  // Check for existing token on app load
   useEffect(() => {
     const checkAuth = async () => {
+      const token = localStorage.getItem('token');
       if (token) {
         try {
+          // Set default authorization header
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          
+          // Verify token by getting user profile
           const response = await axios.get('/api/auth/profile');
-          setUser(response.data);
+          setUser(response.data.user);
+          setIsAuthenticated(true);
         } catch (error) {
-          console.error('Auth check failed:', error);
-          logout();
+          console.error('Token verification failed:', error);
+          // Clear invalid token
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          delete axios.defaults.headers.common['Authorization'];
         }
       }
       setLoading(false);
     };
 
     checkAuth();
-  }, [token]);
+  }, []);
 
   const login = async (emailOrPhone, password) => {
     try {
@@ -49,61 +49,89 @@ export const AuthProvider = ({ children }) => {
         emailOrPhone,
         password
       });
+
+      const { token, user } = response.data;
       
-      const { token: newToken, user: userData } = response.data;
-      setToken(newToken);
-      setUser(userData);
-      localStorage.setItem('token', newToken);
+      // Store token and user data
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      // Set default authorization header
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      setUser(user);
+      setIsAuthenticated(true);
       
       return { success: true };
     } catch (error) {
-      console.error('Login failed:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 'Login failed' 
-      };
+      console.error('Login error:', error);
+      const errorMessage = error.response?.data?.error || 'Login failed. Please try again.';
+      return { success: false, error: errorMessage };
     }
   };
 
   const register = async (userData) => {
     try {
-      const response = await axios.post('/api/auth/register', userData);
-      return { success: true, data: response.data };
+      const response = await axios.post('/api/auth/register', {
+        fullName: userData.fullName,
+        email: userData.email,
+        phoneNumber: userData.phoneNumber,
+        password: userData.password,
+        address: userData.address,
+        locality: userData.locality,
+        pincode: userData.pincode,
+        communityCode: userData.communityCode,
+        role: userData.userRole
+      });
+
+      const { token, user } = response.data;
+      
+      // Store token and user data
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      // Set default authorization header
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      setUser(user);
+      setIsAuthenticated(true);
+      
+      return { success: true, data: user };
     } catch (error) {
-      console.error('Registration failed:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 'Registration failed' 
-      };
+      console.error('Registration error:', error);
+      const errorMessage = error.response?.data?.error || 'Registration failed. Please try again.';
+      return { success: false, error: errorMessage };
     }
   };
 
   const logout = () => {
     setUser(null);
-    setToken(null);
+    setIsAuthenticated(false);
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     delete axios.defaults.headers.common['Authorization'];
   };
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await axios.put('/api/users/profile', profileData);
-      setUser(response.data);
+      const response = await axios.put('/api/auth/profile', profileData);
+      const updatedUser = response.data.user;
+      
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      
       return { success: true };
     } catch (error) {
       console.error('Profile update failed:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 'Profile update failed' 
-      };
+      const errorMessage = error.response?.data?.error || 'Profile update failed. Please try again.';
+      return { success: false, error: errorMessage };
     }
   };
 
   const value = {
     user,
-    token,
+    isAuthenticated,
     loading,
-    isAuthenticated: !!user,
     login,
     register,
     logout,

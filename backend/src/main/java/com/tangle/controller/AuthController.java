@@ -19,7 +19,7 @@ public class AuthController {
     @Autowired
     private UserService userService;
     
-    @PostMapping("/api/auth/register")
+    @PostMapping("/auth/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto registrationDto) {
         try {
             User user = userService.registerUser(registrationDto);
@@ -39,7 +39,7 @@ public class AuthController {
         }
     }
     
-    @PostMapping("/api/auth/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDto loginDto) {
         try {
             Map<String, Object> loginResponse = userService.loginUser(loginDto);
@@ -58,7 +58,7 @@ public class AuthController {
         }
     }
     
-    @GetMapping("/api/auth/profile")
+    @GetMapping("/auth/profile")
     public ResponseEntity<?> getCurrentUser() {
         try {
             User user = userService.getCurrentUser();
@@ -92,7 +92,7 @@ public class AuthController {
     }
     
     // Simple test endpoint
-    @GetMapping("/api/test")
+    @GetMapping("/test")
     public ResponseEntity<Map<String, String>> test() {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Backend is working!");

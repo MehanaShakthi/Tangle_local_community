@@ -140,8 +140,11 @@ const Login = () => {
             🚀 Demo Account
           </h4>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-            Email: demo@tangle.com<br />
-            Password: demo123
+            Email: john@example.com<br />
+            Password: abcd
+          </p>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '10px' }}>
+            Or use phone: 9876543211
           </p>
         </div>
       </div>

@@ -93,7 +93,7 @@ const CreatePost = () => {
         price: formData.price ? parseFloat(formData.price) : null
       };
 
-      const response = await axios.post('/api/posts', postData);
+              const response = await axios.post('/api/posts', postData);
       
       setSuccess('Post created successfully!');
       setTimeout(() => {

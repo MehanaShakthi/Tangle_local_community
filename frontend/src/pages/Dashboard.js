@@ -33,7 +33,7 @@ const Dashboard = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get('/api/posts', {
+              const response = await axios.get('/api/posts', {
         params: {
           category: selectedCategory !== 'ALL' ? selectedCategory : undefined,
           page: 0,
@@ -50,7 +50,7 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get('/api/posts/stats');
+              const response = await axios.get('/api/posts/stats');
       setStats(response.data);
     } catch (error) {
       console.error('Error fetching stats:', error);

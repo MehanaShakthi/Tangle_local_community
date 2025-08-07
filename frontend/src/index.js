@@ -5,7 +5,7 @@ import App from './App';
 import axios from 'axios';
 
 // Configure axios base URL
-axios.defaults.baseURL = 'http://localhost:8080/api';
+axios.defaults.baseURL = 'http://localhost:8080';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
